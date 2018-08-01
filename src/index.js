@@ -22,15 +22,14 @@ function isAllTrue(array, fn) {
     } else if (!Array.isArray(array) || array.length == 0) {
         throw new Error ('empty array');
     }
-
     let result = true;
+
     for (let i = 0; i < array.length; i++) {
         result = result && fn(array[i]);
     }
     
     return result;
 }
-
 
 /*
  Задание 2:
@@ -54,20 +53,13 @@ function isSomeTrue(array, fn) {
     } else if (!Array.isArray(array) || array.length == 0) {
         throw new Error ('empty array');
     }
-
     let result = false;
+    
     for (let i = 0; i < array.length; i++) {
         result = result || fn(array[i]);
     }
     
     return result;
-}
-
-try {
-    let res = isAllTrue({}, n => n < 10);
-    console.log(res);
-} catch(er) {
-    console.warn(er.message);
 }
 
 /*
@@ -85,12 +77,12 @@ function returnBadArguments(fn, ...args) {
     if (typeof(fn) !== 'function') {
         throw new Error ('fn is not a function'); 
     }
-
     let result = [];
+    
     for (let i = 0; i < args.length; i++) {
         try {
             fn(args[i]);
-        } catch(e) {
+        } catch (e) {
             result.push(args[i]);
         }
     }
@@ -119,51 +111,56 @@ function calculator(number = 0) {
     if (typeof(number) !== 'number') {
         throw new Error ('number is not a number');
     }
+    
     return {
         sum() {
             let result = number;
+            
             for (let i = 0; i < arguments.length; i++) {
                 result += arguments[i];
             }
+            
             return result;
         },
         dif() {
             let result = number;
+            
             for (let i = 0; i < arguments.length; i++) {
                 result -= arguments[i];
             }
+           
             return result;            
         },
         div() {
             let result = number;
+            
             for (let i = 0; i < arguments.length; i++) {
                 if (arguments[i] == 0) {
-                    //continue; //а нельзя как-то и выбросить исключение, и просто перейти к следующему шагу цикла?
+                    // continue; //а нельзя как-то и выбросить исключение, и просто перейти к следующему шагу цикла?
                     throw new Error ('division by 0');
                 }
                 result /= arguments[i];
             }
+            
             return result;            
         },
         mul() {
             let result = number;
+            
             for (let i = 0; i < arguments.length; i++) {
                 result *= arguments[i];
             }
+            
             return result;            
         }
     }
 }
 
-console.log(calculator(100).div(5, 0, 10));
-
-
 /* При решении задач, пострайтесь использовать отладчик */
-/*
+
 export {
     isAllTrue,
     isSomeTrue,
     returnBadArguments,
     calculator
 };
-*/
