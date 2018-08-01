@@ -17,11 +17,11 @@
    isAllTrue([100, 2, 3, 4, 5], n => n < 10) // вернет false
  */
 function isAllTrue(array, fn) {
-    if (typeof(fn) !== 'function') {
-        throw new Error ('fn is not a function');
-    } else if (!Array.isArray(array) || array.length == 0) {
+    if (!Array.isArray(array) || array.length == 0) {
         throw new Error ('empty array');
-    }
+    } else if (typeof(fn) !== 'function') {
+        throw new Error ('fn is not a function');
+    };
     let result = true;
 
     for (let i = 0; i < array.length; i++) {
@@ -48,11 +48,11 @@ function isAllTrue(array, fn) {
    isSomeTrue([1, 2, 3, 4, 5], n => n > 20) // вернет false
  */
 function isSomeTrue(array, fn) {
-    if (typeof(fn) !== 'function') {
-        throw new Error ('fn is not a function');
-    } else if (!Array.isArray(array) || array.length == 0) {
+    if (!Array.isArray(array) || array.length == 0) {
         throw new Error ('empty array');
-    }
+    } else if (typeof(fn) !== 'function') {
+        throw new Error ('fn is not a function');
+    };
     let result = false;
     
     for (let i = 0; i < array.length; i++) {
