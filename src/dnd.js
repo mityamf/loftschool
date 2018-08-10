@@ -1,0 +1,76 @@
+/* Задание со звездочкой */
+
+/*
+ Создайте страницу с кнопкой.
+ При нажатии на кнопку должен создаваться div со случайными размерами, цветом и позицией на экране
+ Необходимо предоставить возможность перетаскивать созданные div при помощи drag and drop
+ Запрещено использовать сторонние библиотеки. Разрешено пользоваться только тем, что встроено в браузер
+ */
+
+/*
+ homeworkContainer - это контейнер для всех ваших домашних заданий
+ Если вы создаете новые html-элементы и добавляете их на страницу, то дабавляйте их только в этот контейнер
+
+ Пример:
+   const newDiv = document.createElement('div');
+   homeworkContainer.appendChild(newDiv);
+ */
+const homeworkContainer = document.querySelector('#homework-container');
+
+/*
+ Функция должна создавать и возвращать новый div с классом draggable-div и случайными размерами/цветом/позицией
+ Функция должна только создавать элемент и задвать ему случайные размер/позицию/цвет
+ Функция НЕ должна добавлять элемент на страницу. На страницу элемент добавляется отдельно
+
+ Пример:
+   const newDiv = createDiv();
+   homeworkContainer.appendChild(newDiv);
+ */
+function createDiv() {
+    let div = document.createElement('div');
+    const width = Math.floor(Math.random()*500) + 'px';
+    const height = Math.floor(Math.random()*300) + 'px';
+    const bckgColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+    const top = Math.floor(Math.random()*90) + 'vh';
+    const left = Math.floor(Math.random()*90) + 'vw';
+    const styles = {
+        width,
+        height,
+        backgroundColor: bckgColor,
+        position: 'absolute',
+        top,
+        left
+    };
+
+    Object.assign(div.style, styles);
+    div.className = 'draggable-div';
+    div.setAttribute('draggable', true);
+    
+    return div;
+}
+
+/*
+ Функция должна добавлять обработчики событий для перетаскивания элемента при помощи drag and drop
+
+ Пример:
+   const newDiv = createDiv();
+   homeworkContainer.appendChild(newDiv);
+   addListeners(newDiv);
+ */
+function addListeners(target) {
+    
+    target.draggable = true;
+
+}
+
+let addDivButton = homeworkContainer.querySelector('#addDiv');
+
+addDivButton.addEventListener('click', function() {
+    const div = createDiv();
+    
+    homeworkContainer.appendChild(div);
+});
+
+export {
+    createDiv
+};
