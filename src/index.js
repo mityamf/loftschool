@@ -9,11 +9,11 @@
    delayPromise(3) // вернет promise, который будет разрешен через 3 секунды
  */
 function delayPromise(seconds) {
-	return new Promise(function (resolve) {
-		setTimeout(resolve, seconds * 1000 );
-	})
+    
+    return new Promise(function (resolve) {
+        setTimeout(resolve, seconds * 1000 );
+    })
 }
-
 
 /*
  Задание 2:
@@ -29,30 +29,32 @@ function delayPromise(seconds) {
    loadAndSortTowns().then(towns => console.log(towns)) // должна вывести в консоль отсортированный массив городов
  */
 function loadAndSortTowns() {
-	return new Promise(function(resolve, reject) {
-		const xhr = new XMLHttpRequest();
+    return new Promise(function(resolve, reject) {
+        const xhr = new XMLHttpRequest();
+        
+        xhr.open('GET', 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
+        xhr.responseType = 'json';
+        xhr.send();
+        xhr.addEventListener('load', function() {
+            if (this.status >= 400) {
+                reject();
+            } else {
+                let answer = this.response;
+                
+                answer.sort( (a, b) => {
+                    if (a.name > b.name ) {
+                        return 1;
+                    }
+                    if (a.name < b.name) {
+                        return -1;
+                    }
 
-		xhr.open('GET', 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
-		xhr.responseType = 'json';
-		xhr.send();
-		xhr.addEventListener('load', function() {
-			if (this.status >= 400) {
-				reject(e);
-			} else {
-				let answer = this.response;
-				answer.sort( (a, b) => {
-					if (a.name > b.name ) {
-						return 1;
-					}
-					if (a.name < b.name) {
-						return -1;
-					}
-					return 0;
-				})
-				resolve(answer);
-			}
-		});
-	})
+                    return 0;
+                })
+                resolve(answer);
+            }
+        });
+    })
 }
 
 export {
