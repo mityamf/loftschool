@@ -54,6 +54,8 @@ addButton.addEventListener('click', () => {
     setCookie(cookieName, cookieValue);
     if (cookies[cookieName] == undefined) {
         createNewLine(listTable, cookieName, cookieValue);
+    } else {
+        updateTable(cookieName, cookieValue);
     }
     addNameInput.value = '';
     addValueInput.value = '';
@@ -77,7 +79,9 @@ function showCookiesOnLoad() {
     const names = Object.keys(cookies);
 
     for (let i = 0; i < names.length; i++) {
-        createNewLine(listTable, names[i], cookies[names[i]]);
+        if (names[i]) {
+            createNewLine(listTable, names[i], cookies[names[i]]);
+        }
     }
     deleteButtonHandler();
 }
@@ -105,15 +109,12 @@ function createNewLine(target, name, value) {
 }
 
 function updateTable(name, value) {
-    const selector = `[data-cookie-name="${name}"]`;
-    console.log(selector);
-    var seekingCell = document.querySelector('[data-cookie-name="sds"]');
-    console.log(seekingCell);
+    const selector = `[data-cookie-name="${name}"]`,
+        seekingCell = document.querySelector(selector);
 
+    seekingCell.nextElementSibling.textContent = value;
 }
 
-
-updateTable('sds', '45');
 
 function setCookie(name, value, options) {
     options = options || {};
