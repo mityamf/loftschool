@@ -43,14 +43,13 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
-filterNameInput.addEventListener('keyup', function() {
-    // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
-});
+filterNameInput.addEventListener('keyup', filterHandler);
+
+let cookies = parseAllCookies();
 
 addButton.addEventListener('click', () => {
     let cookieName = addNameInput.value, 
-        cookieValue = addValueInput.value,
-        cookies = parseAllCookies();
+        cookieValue = addValueInput.value;
 
     setCookie(cookieName, cookieValue);
     if (cookies[cookieName] == undefined) {
@@ -75,9 +74,7 @@ function parseAllCookies() {
 }
 
 function showCookiesOnLoad() {
-    const cookies = parseAllCookies(),
-        names = Object.keys(cookies);
-
+    const names = Object.keys(cookies);
 
     for (let i = 0; i < names.length; i++) {
         createNewLine(listTable, names[i], cookies[names[i]]);
@@ -98,17 +95,25 @@ function deleteButtonHandler() {
     });
 }
 
-
-
-
 function createNewLine(target, name, value) {
     target.innerHTML += 
         `<tr>
-            <td>${name}</td>
+            <td data-cookie-name="${name}">${name}</td>
             <td>${value}</td>
             <td><div class="btn delete">delete</div></td>
         </tr>`;
 }
+
+function updateTable(name, value) {
+    const selector = `[data-cookie-name="${name}"]`;
+    console.log(selector);
+    var seekingCell = document.querySelector('[data-cookie-name="sds"]');
+    console.log(seekingCell);
+
+}
+
+
+updateTable('sds', '45');
 
 function setCookie(name, value, options) {
     options = options || {};
@@ -144,3 +149,7 @@ function deleteCookie(name) {
     });
 }
 
+
+function filterHandler() {
+
+}
