@@ -48,5 +48,99 @@ filterNameInput.addEventListener('keyup', function() {
 });
 
 addButton.addEventListener('click', () => {
-    // здесь можно обработать нажатие на кнопку "добавить cookie"
+    let cookieName = addNameInput.value, 
+        cookieValue = addValueInput.value,
+        cookies = parseAllCookies();
+
+    setCookie(cookieName, cookieValue);
+    if (cookies[cookieName] == undefined) {
+        createNewLine(listTable, cookieName, cookieValue);
+    }
+    addNameInput.value = '';
+    addValueInput.value = '';
 });
+
+window.addEventListener('load', showCookiesOnLoad);
+
+function parseAllCookies() {
+    const cookiesArray = document.cookie.split('; ');
+    const cookies = cookiesArray.reduce((prev, current) => {
+        const [name, value] = current.split('=');
+        prev[name] = value;
+        
+        return  prev;
+    }, {});
+    
+    return cookies;    
+}
+
+function showCookiesOnLoad() {
+    const cookies = parseAllCookies(),
+        names = Object.keys(cookies);
+
+
+    for (let i = 0; i < names.length; i++) {
+        createNewLine(listTable, names[i], cookies[names[i]]);
+    }
+    deleteButtonHandler();
+}
+
+
+function deleteButtonHandler() {
+    const deleteButtons = document.querySelectorAll('.btn.delete');
+    deleteButtons.forEach(function(item) {
+        item.addEventListener('click', function() {
+            const deletingName = item.closest('tr').firstElementChild.textContent;
+            deleteCookie(deletingName);
+            this.closest('tr').remove();
+        })
+        
+    });
+}
+
+
+
+
+function createNewLine(target, name, value) {
+    target.innerHTML += 
+        `<tr>
+            <td>${name}</td>
+            <td>${value}</td>
+            <td><div class="btn delete">delete</div></td>
+        </tr>`;
+}
+
+function setCookie(name, value, options) {
+    options = options || {};
+
+    let expires = options.expires;
+
+    if (typeof expires == "number" && expires) {
+        let d = new Date();
+        d.setTime(d.getTime() + expires * 1000);
+        expires = options.expires = d;
+    }
+    if (expires && expires.toUTCString) {
+        options.expires = expires.toUTCString();
+    }
+
+    value = encodeURIComponent(value);
+
+    let updatedCookie = name + "=" + value;
+
+    for (let propName in options) {
+        updatedCookie += "; " + propName;
+        let propValue = options[propName];
+        if (propValue !== true) {
+        updatedCookie += "=" + propValue;
+        }
+    }
+
+    document.cookie = updatedCookie;
+}
+function deleteCookie(name) {
+    setCookie(name, '', {
+        expires: -1
+    });
+}
+
