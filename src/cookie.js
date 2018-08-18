@@ -49,18 +49,24 @@ let cookies = parseAllCookies();
 
 addButton.addEventListener('click', () => {
     let cookieName = addNameInput.value, 
-        cookieValue = addValueInput.value;
+        cookieValue = addValueInput.value,
+        filterValue = filterNameInput.value;
 
     if (cookieName) {
         setCookie(cookieName, cookieValue);
     }
-    if (cookies[cookieName] == undefined) {
-        createNewLine(listTable, cookieName, cookieValue);
-    } else {
-        updateValue(cookieName, cookieValue);
+
+    if ( isMatching(cookieName, filterValue) || isMatching(cookieValue, filterValue) ) {
+        if (cookies[cookieName] == undefined) {
+            createNewLine(listTable, cookieName, cookieValue);
+        } else {
+            updateValueInTable(cookieName, cookieValue);
+        }
     }
+
     addNameInput.value = '';
     addValueInput.value = '';
+    cookies = parseAllCookies();
 });
 
 window.addEventListener('load', function() {
@@ -113,7 +119,7 @@ function createNewLine(target, name, value) {
         </tr>`;
 }
 
-function updateValue(name, value) {
+function updateValueInTable(name, value) {
     const selector = `[data-cookie-name="${name}"]`,
         seekingCell = document.querySelector(selector);
 
@@ -153,6 +159,7 @@ function deleteCookie(name) {
     setCookie(name, '', {
         expires: -1
     });
+    cookies = parseAllCookies();
 }
 
 function isMatching(full, chunk) {
