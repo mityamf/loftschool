@@ -51,17 +51,21 @@ addButton.addEventListener('click', () => {
     let cookieName = addNameInput.value, 
         cookieValue = addValueInput.value;
 
-    setCookie(cookieName, cookieValue);
+    if (cookieName) {
+        setCookie(cookieName, cookieValue);
+    }
     if (cookies[cookieName] == undefined) {
         createNewLine(listTable, cookieName, cookieValue);
     } else {
-        updateTable(cookieName, cookieValue);
+        updateValue(cookieName, cookieValue);
     }
     addNameInput.value = '';
     addValueInput.value = '';
 });
 
-window.addEventListener('load', showCookiesOnLoad);
+window.addEventListener('load', function() {
+    createTable(cookies);
+});
 
 function parseAllCookies() {
     const cookiesArray = document.cookie.split('; ');
@@ -75,8 +79,9 @@ function parseAllCookies() {
     return cookies;    
 }
 
-function showCookiesOnLoad() {
-    const names = Object.keys(cookies);
+function createTable(data) {
+    const names = Object.keys(data);
+    listTable.innerHTML = '';
 
     for (let i = 0; i < names.length; i++) {
         if (names[i]) {
@@ -108,7 +113,7 @@ function createNewLine(target, name, value) {
         </tr>`;
 }
 
-function updateTable(name, value) {
+function updateValue(name, value) {
     const selector = `[data-cookie-name="${name}"]`,
         seekingCell = document.querySelector(selector);
 
@@ -150,7 +155,24 @@ function deleteCookie(name) {
     });
 }
 
+function isMatching(full, chunk) {
+    if (full.toLowerCase().indexOf(chunk.toLowerCase()) >= 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 function filterHandler() {
+    const names = Object.keys(cookies);
+    const filterValue = this.value;
 
+    let filtered = {};
+    for (let i = 0; i < names.length; i++) {
+        if ( isMatching(names[i], filterValue) || isMatching(cookies[names[i]], filterValue)) {
+            filtered[names[i]] = cookies[names[i]];
+        }
+    }
+    createTable(filtered);
 }
+
