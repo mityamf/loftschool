@@ -77,9 +77,10 @@ function parseAllCookies() {
     const cookiesArray = document.cookie.split('; ');
     const cookies = cookiesArray.reduce((prev, current) => {
         const [name, value] = current.split('=');
+        
         prev[name] = value;
         
-        return  prev;
+        return prev;
     }, {});
     
     return cookies;    
@@ -87,6 +88,7 @@ function parseAllCookies() {
 
 function createTable(data) {
     const names = Object.keys(data);
+    
     listTable.innerHTML = '';
 
     for (let i = 0; i < names.length; i++) {
@@ -97,12 +99,13 @@ function createTable(data) {
     deleteButtonHandler();
 }
 
-
 function deleteButtonHandler() {
     const deleteButtons = document.querySelectorAll('.btn.delete');
+    
     deleteButtons.forEach(function(item) {
         item.addEventListener('click', function() {
             const deletingName = item.closest('tr').firstElementChild.textContent;
+            
             deleteCookie(deletingName);
             this.closest('tr').remove();
         })
@@ -126,14 +129,14 @@ function updateValueInTable(name, value) {
     seekingCell.nextElementSibling.textContent = value;
 }
 
-
 function setCookie(name, value, options) {
     options = options || {};
 
     let expires = options.expires;
 
-    if (typeof expires == "number" && expires) {
+    if (typeof expires == 'number' && expires) {
         let d = new Date();
+        
         d.setTime(d.getTime() + expires * 1000);
         expires = options.expires = d;
     }
@@ -143,13 +146,14 @@ function setCookie(name, value, options) {
 
     value = encodeURIComponent(value);
 
-    let updatedCookie = name + "=" + value;
+    let updatedCookie = name + '=' + value;
 
     for (let propName in options) {
-        updatedCookie += "; " + propName;
+        updatedCookie += '; ' + propName;
         let propValue = options[propName];
+        
         if (propValue !== true) {
-        updatedCookie += "=" + propValue;
+            updatedCookie += '=' + propValue;
         }
     }
 
@@ -173,8 +177,8 @@ function isMatching(full, chunk) {
 function filterHandler() {
     const names = Object.keys(cookies);
     const filterValue = this.value;
-
     let filtered = {};
+
     for (let i = 0; i < names.length; i++) {
         if ( isMatching(names[i], filterValue) || isMatching(cookies[names[i]], filterValue)) {
             filtered[names[i]] = cookies[names[i]];
