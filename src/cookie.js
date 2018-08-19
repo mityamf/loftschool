@@ -17,6 +17,7 @@
  В таблице должны быть только те cookie, в имени или значении которых, хотя бы частично, есть введенное значение
  Если в поле фильтра пусто, то должны выводиться все доступные cookie
  Если дабавляемая cookie не соответсвуте фильтру, то она должна быть добавлена только в браузер, но не в таблицу
+ 
  Если добавляется cookie, с именем уже существующией cookie и ее новое значение не соответствует фильтру,
  то ее значение должно быть обновлено в браузере, а из таблицы cookie должна быть удалена
 
@@ -58,18 +59,22 @@ function addCookieHandler() {
 
     if (cookieName) {
         document.cookie = `${cookieName}=${cookieValue}`;
+        cookies = parseAllCookies();
+        
         if ( isMatching(cookieName, filterValue) || isMatching(cookieValue, filterValue) ) {
             if (cookies[cookieName] == undefined) {
                 createNewLine(cookieName, cookieValue);
             } else {
                 updateValueInTable(cookieName, cookieValue);
             }
+        } else if ( !isMatching(cookieValue, filterValue) ) {
+            filterHandler();
         }
     }
 
     addNameInput.value = '';
     addValueInput.value = '';
-    cookies = parseAllCookies();
+    
 }
 
 function parseAllCookies() {
@@ -134,7 +139,7 @@ function isMatching(full, chunk) {
 
 function filterHandler() {
     const names = Object.keys(cookies);
-    const filterValue = this.value;
+    const filterValue = filterNameInput.value;
     let filtered = {};
 
     for (let i = 0; i < names.length; i++) {
