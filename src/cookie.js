@@ -47,18 +47,22 @@ filterNameInput.addEventListener('keyup', filterHandler);
 
 let cookies = parseAllCookies();
 
-addButton.addEventListener('click', () => {
+window.addEventListener('load', () => createTable(cookies));
+listTable.addEventListener('click', deleteHandler);
+addButton.addEventListener('click', addCookieHandler);
+
+function addCookieHandler() {
     let cookieName = addNameInput.value, 
         cookieValue = addValueInput.value,
         filterValue = filterNameInput.value;
 
     if (cookieName) {
-        setCookie(cookieName, cookieValue);
+        document.cookie = `${cookieName}=${cookieValue}`;
     }
 
     if ( isMatching(cookieName, filterValue) || isMatching(cookieValue, filterValue) ) {
         if (cookies[cookieName] == undefined) {
-            createNewLine(listTable, cookieName, cookieValue);
+            createNewLine(cookieName, cookieValue);
         } else {
             updateValueInTable(cookieName, cookieValue);
         }
@@ -67,24 +71,17 @@ addButton.addEventListener('click', () => {
     addNameInput.value = '';
     addValueInput.value = '';
     cookies = parseAllCookies();
-});
-listTable.addEventListener('click', deleteHandler);
-
-window.addEventListener('load', function() {
-    createTable(cookies);
-});
+}
 
 function parseAllCookies() {
     const cookiesArray = document.cookie.split('; ');
-    const cookies = cookiesArray.reduce((prev, current) => {
+    return cookiesArray.reduce((prev, current) => {
         const [name, value] = current.split('=');
         
         prev[name] = value;
         
         return prev;
-    }, {});
-    
-    return cookies;    
+    }, {});   
 }
 
 function createTable(data) {
@@ -94,7 +91,7 @@ function createTable(data) {
 
     for (let i = 0; i < names.length; i++) {
         if (names[i]) {
-            createNewLine(listTable, names[i], cookies[names[i]]);
+            createNewLine(names[i], cookies[names[i]]);
         }
     }
 }
@@ -107,16 +104,14 @@ function deleteHandler(e) {
     }
 }
 
-function createNewLine(target, name, value) {
-    target.innerHTML += 
+function createNewLine(name, value) {
+    listTable.innerHTML += 
         `<tr>
             <td data-cookie-name="${name}">${name}</td>
             <td>${value}</td>
             <td><div class="btn delete">delete</div></td>
         </tr>`;
 }
-
-
 
 function updateValueInTable(name, value) {
     const selector = `[data-cookie-name="${name}"]`,
@@ -125,40 +120,8 @@ function updateValueInTable(name, value) {
     seekingCell.nextElementSibling.textContent = value;
 }
 
-function setCookie(name, value, options) {
-    options = options || {};
-
-    let expires = options.expires;
-
-    if (typeof expires == 'number' && expires) {
-        let d = new Date();
-        
-        d.setTime(d.getTime() + expires * 1000);
-        expires = options.expires = d;
-    }
-    if (expires && expires.toUTCString) {
-        options.expires = expires.toUTCString();
-    }
-
-    value = encodeURIComponent(value);
-
-    let updatedCookie = name + '=' + value;
-
-    for (let propName in options) {
-        updatedCookie += '; ' + propName;
-        let propValue = options[propName];
-        
-        if (propValue !== true) {
-            updatedCookie += '=' + propValue;
-        }
-    }
-
-    document.cookie = updatedCookie;
-}
 function deleteCookie(name) {
-    setCookie(name, '', {
-        expires: -1
-    });
+    document.cookie = `${name}=''; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
     cookies = parseAllCookies();
 }
 
