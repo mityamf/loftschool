@@ -68,6 +68,7 @@ addButton.addEventListener('click', () => {
     addValueInput.value = '';
     cookies = parseAllCookies();
 });
+listTable.addEventListener('click', deleteHandler);
 
 window.addEventListener('load', function() {
     createTable(cookies);
@@ -96,21 +97,14 @@ function createTable(data) {
             createNewLine(listTable, names[i], cookies[names[i]]);
         }
     }
-    deleteButtonHandler();
 }
 
-function deleteButtonHandler() {
-    const deleteButtons = document.querySelectorAll('.btn.delete');
-    
-    deleteButtons.forEach(function(item) {
-        item.addEventListener('click', function() {
-            const deletingName = item.closest('tr').firstElementChild.textContent;
-            
-            deleteCookie(deletingName);
-            this.closest('tr').remove();
-        })
-        
-    });
+function deleteHandler(e) {
+    if (e.target.classList.contains('delete')) { 
+        const deletingName = e.target.closest('tr').firstElementChild.textContent; 
+        deleteCookie(deletingName);
+        e.target.closest('tr').remove();
+    }
 }
 
 function createNewLine(target, name, value) {
@@ -121,6 +115,8 @@ function createNewLine(target, name, value) {
             <td><div class="btn delete">delete</div></td>
         </tr>`;
 }
+
+
 
 function updateValueInTable(name, value) {
     const selector = `[data-cookie-name="${name}"]`,
