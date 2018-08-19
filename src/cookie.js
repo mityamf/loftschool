@@ -59,8 +59,6 @@ function addCookieHandler() {
 
     if (cookieName) {
         document.cookie = `${cookieName}=${cookieValue}`;
-        cookies = parseAllCookies();
-        
         if ( isMatching(cookieName, filterValue) || isMatching(cookieValue, filterValue) ) {
             if (cookies[cookieName] == undefined) {
                 createNewLine(cookieName, cookieValue);
@@ -68,13 +66,14 @@ function addCookieHandler() {
                 updateValueInTable(cookieName, cookieValue);
             }
         } else if ( !isMatching(cookieValue, filterValue) ) {
+            cookies = parseAllCookies();
             filterHandler();
         }
     }
 
     addNameInput.value = '';
     addValueInput.value = '';
-    
+    cookies = parseAllCookies();
 }
 
 function parseAllCookies() {
