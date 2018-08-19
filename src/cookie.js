@@ -58,13 +58,12 @@ function addCookieHandler() {
 
     if (cookieName) {
         document.cookie = `${cookieName}=${cookieValue}`;
-    }
-
-    if ( isMatching(cookieName, filterValue) || isMatching(cookieValue, filterValue) ) {
-        if (cookies[cookieName] == undefined) {
-            createNewLine(cookieName, cookieValue);
-        } else {
-            updateValueInTable(cookieName, cookieValue);
+        if ( isMatching(cookieName, filterValue) || isMatching(cookieValue, filterValue) ) {
+            if (cookies[cookieName] == undefined) {
+                createNewLine(cookieName, cookieValue);
+            } else {
+                updateValueInTable(cookieName, cookieValue);
+            }
         }
     }
 
