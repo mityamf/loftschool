@@ -48,12 +48,15 @@ filterNameInput.addEventListener('keyup', filterHandler);
 
 window.addEventListener('load', () => {
     let cookiesObj = parseAllCookies();
+    
     createTable(cookiesObj);
 });
 
 function parseAllCookies() {
     const cookiesArray = document.cookie.split('; ');
+    
     return cookiesArray.reduce((prev, current) => {
+        
         const [name, value] = current.split('=');
         
         prev[name] = value;
@@ -84,12 +87,12 @@ function createNewLine(name, value) {
         </tr>`;
 }
 
-
 listTable.addEventListener('click', deleteHandler);
 
 function deleteHandler(e) {
     if (e.target.classList.contains('delete')) { 
         const deletingName = e.target.closest('tr').firstElementChild.textContent; 
+
         deleteCookie(deletingName);
         e.target.closest('tr').remove();
     }
@@ -97,29 +100,23 @@ function deleteHandler(e) {
 
 function deleteCookie(name) {
     const date = new Date(0);
+
     document.cookie = `${name}=; expires=${date.toUTCString()}`;
 }
 
 addButton.addEventListener('click', addCookieHandler);
 
-
-
-
 function addCookieHandler() {
     let cookieName = addNameInput.value, 
-        cookieValue = addValueInput.value,
-        filterValue = filterNameInput.value;
+        cookieValue = addValueInput.value;
 
     document.cookie = `${cookieName}=${cookieValue}`;
     filterHandler();
 }
 
-
 function isMatching(full, chunk) {
     if (full.toLowerCase().indexOf(chunk.toLowerCase()) >= 0) {
         return true;
-    } else {
-        return false;
     }
 }
 
