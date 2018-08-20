@@ -46,35 +46,10 @@ const listTable = homeworkContainer.querySelector('#list-table tbody');
 
 filterNameInput.addEventListener('keyup', filterHandler);
 
-let cookies = parseAllCookies();
-
-window.addEventListener('load', () => createTable(cookies));
-listTable.addEventListener('click', deleteHandler);
-addButton.addEventListener('click', addCookieHandler);
-
-function addCookieHandler() {
-    let cookieName = addNameInput.value, 
-        cookieValue = addValueInput.value,
-        filterValue = filterNameInput.value;
-
-    if (cookieName) {
-        document.cookie = `${cookieName}=${cookieValue}`;
-        if ( isMatching(cookieName, filterValue) || isMatching(cookieValue, filterValue) ) {
-            if (cookies[cookieName] == undefined) {
-                createNewLine(cookieName, cookieValue);
-            } else {
-                updateValueInTable(cookieName, cookieValue);
-            }
-        } else if ( !isMatching(cookieValue, filterValue) ) {
-            cookies = parseAllCookies();
-            filterHandler();
-        }
-    }
-
-    addNameInput.value = '';
-    addValueInput.value = '';
-    cookies = parseAllCookies();
-}
+window.addEventListener('load', () => {
+    let cookiesObj = parseAllCookies();
+    createTable(cookiesObj);
+});
 
 function parseAllCookies() {
     const cookiesArray = document.cookie.split('; ');
@@ -88,16 +63,29 @@ function parseAllCookies() {
 }
 
 function createTable(data) {
+    if (!data) return;
     const names = Object.keys(data);
     
     listTable.innerHTML = '';
 
     for (let i = 0; i < names.length; i++) {
         if (names[i]) {
-            createNewLine(names[i], cookies[names[i]]);
+            createNewLine(names[i], data[names[i]]);
         }
     }
 }
+
+function createNewLine(name, value) {
+    listTable.innerHTML += 
+        `<tr>
+            <td data-cookie-name="${name}">${name}</td>
+            <td>${value}</td>
+            <td><button class="btn delete">delete</button></td>
+        </tr>`;
+}
+
+
+listTable.addEventListener('click', deleteHandler);
 
 function deleteHandler(e) {
     if (e.target.classList.contains('delete')) { 
@@ -107,26 +95,25 @@ function deleteHandler(e) {
     }
 }
 
-function createNewLine(name, value) {
-    listTable.innerHTML += 
-        `<tr>
-            <td data-cookie-name="${name}">${name}</td>
-            <td>${value}</td>
-            <td><div class="btn delete">delete</div></td>
-        </tr>`;
-}
-
-function updateValueInTable(name, value) {
-    const selector = `[data-cookie-name="${name}"]`,
-        seekingCell = document.querySelector(selector);
-
-    seekingCell.nextElementSibling.textContent = value;
-}
-
 function deleteCookie(name) {
-    document.cookie = `${name}=''; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
-    cookies = parseAllCookies();
+    const date = new Date(0);
+    document.cookie = `${name}=; expires=${date.toUTCString()}`;
 }
+
+addButton.addEventListener('click', addCookieHandler);
+
+
+
+
+function addCookieHandler() {
+    let cookieName = addNameInput.value, 
+        cookieValue = addValueInput.value,
+        filterValue = filterNameInput.value;
+
+    document.cookie = `${cookieName}=${cookieValue}`;
+    filterHandler();
+}
+
 
 function isMatching(full, chunk) {
     if (full.toLowerCase().indexOf(chunk.toLowerCase()) >= 0) {
@@ -137,6 +124,7 @@ function isMatching(full, chunk) {
 }
 
 function filterHandler() {
+    const cookies = parseAllCookies();
     const names = Object.keys(cookies);
     const filterValue = filterNameInput.value;
     let filtered = {};
